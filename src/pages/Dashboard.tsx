@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, role, loading } = useAuth();
+  const { user, role, farmer, buyer, loading, isEmailConfirmed } = useAuth();
 
   useEffect(() => {
     if (!loading) {
@@ -14,13 +14,26 @@ const Dashboard = () => {
         return;
       }
 
+      if (!isEmailConfirmed) {
+        navigate('/login');
+        return;
+      }
+
       // Redirect based on role
       switch (role) {
         case 'farmer':
-          navigate('/farmer/dashboard');
+          if (farmer) {
+            navigate('/farmer/dashboard');
+          } else {
+            navigate('/onboarding');
+          }
           break;
         case 'buyer':
-          navigate('/buyer/dashboard');
+          if (buyer) {
+            navigate('/buyer/dashboard');
+          } else {
+            navigate('/onboarding');
+          }
           break;
         case 'admin':
           navigate('/admin/dashboard');

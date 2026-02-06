@@ -12,6 +12,8 @@ export interface Profile {
   full_name: string | null;
   phone: string | null;
   avatar_url: string | null;
+  kyc_bvn: string | null;
+  kyc_nin: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -151,7 +153,6 @@ export interface FarmerStats {
   activeOrders: number;
   completedSales: number;
   totalEarnings: number;
-  averageRating: number;
 }
 
 export interface BuyerStats {

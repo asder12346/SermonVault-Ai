@@ -10,11 +10,12 @@ import { toast } from 'sonner';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn, role } = useAuth();
+  const { signIn, isEmailConfirmed } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,11 +27,47 @@ const Login = () => {
     if (error) {
       toast.error(error.message);
     } else {
+      if (!isEmailConfirmed) {
+        toast.warning('Please verify your email before accessing the platform.');
+        return;
+      }
       toast.success('Welcome back!');
-      // Navigate based on role (will be handled by AuthContext refresh)
       setTimeout(() => {
         navigate('/dashboard');
       }, 100);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) {
+      toast.error('Enter your email to resend verification.');
+      return;
+    }
+
+    setResending(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/resend-verification`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        throw new Error(errorBody?.error || 'Unable to resend verification email.');
+      }
+
+      toast.success('Verification email sent. Please check your inbox.');
+    } catch (error: any) {
+      toast.error(error.message || 'Unable to resend verification email.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -99,6 +136,15 @@ const Login = () => {
                 ) : (
                   'Log In'
                 )}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleResendVerification}
+                disabled={resending}
+              >
+                {resending ? 'Sending verification...' : 'Resend verification email'}
               </Button>
             </form>
             

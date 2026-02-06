@@ -1,29 +1,34 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FarmerLayout } from '@/components/layouts/FarmerLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Package, ShoppingCart, DollarSign, Star, TrendingUp, Clock } from 'lucide-react';
+import { Bell, Package, ShoppingCart, DollarSign, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import type { FarmerStats, Order } from '@/lib/types';
+import type { FarmerStats, Notification, Order } from '@/lib/types';
 
 const FarmerDashboard = () => {
-  const { farmer, user } = useAuth();
+  const navigate = useNavigate();
+  const { farmer, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<FarmerStats>({
     totalListings: 0,
     activeOrders: 0,
     completedSales: 0,
     totalEarnings: 0,
-    averageRating: 0,
   });
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (farmer) {
-      fetchDashboardData();
+    if (authLoading) return;
+    if (!farmer) {
+      navigate('/onboarding');
+      return;
     }
-  }, [farmer]);
+    fetchDashboardData();
+  }, [farmer, authLoading, navigate]);
 
   const fetchDashboardData = async () => {
     if (!farmer) return;
@@ -43,7 +48,14 @@ const FarmerDashboard = () => {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      const activeOrders = orders?.filter(o => 
+      const { data: notificationData } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', farmer.user_id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      const activeOrders = orders?.filter(o =>
         ['pending', 'accepted', 'shipped'].includes(o.status)
       ).length || 0;
 
@@ -54,10 +66,10 @@ const FarmerDashboard = () => {
         activeOrders,
         completedSales: farmer.total_sales || 0,
         totalEarnings: farmer.total_earnings || 0,
-        averageRating: farmer.average_rating || 0,
       });
 
       setRecentOrders(orders as Order[] || []);
+      setNotifications(notificationData as Notification[] || []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -84,21 +96,6 @@ const FarmerDashboard = () => {
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back, {farmer?.farm_name || 'Farmer'}</p>
         </div>
-
-        {/* Verification Status */}
-        {farmer?.verification_status === 'pending' && (
-          <Card className="border-warning bg-warning/5">
-            <CardContent className="p-4 flex items-center gap-3">
-              <Clock className="w-5 h-5 text-warning" />
-              <div>
-                <p className="font-medium text-foreground">Verification Pending</p>
-                <p className="text-sm text-muted-foreground">
-                  Your account is under review. You can browse the platform but cannot list products until verified.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -141,15 +138,43 @@ const FarmerDashboard = () => {
           <Card className="stat-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Average Rating</p>
-                <p className="text-2xl font-bold text-foreground">{stats.averageRating.toFixed(1)}</p>
+                <p className="text-sm text-muted-foreground">Completed Sales</p>
+                <p className="text-2xl font-bold text-foreground">{stats.completedSales.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
-                <Star className="w-6 h-6 text-warning" />
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-primary" />
               </div>
             </div>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Bell className="w-5 h-5" />
+              Latest Notifications
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {notifications.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No new notifications.</p>
+            ) : (
+              <div className="space-y-3">
+                {notifications.map((notification) => (
+                  <div key={notification.id} className="rounded-lg border p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-foreground">{notification.title}</p>
+                      {!notification.is_read && (
+                        <span className="text-xs font-semibold text-accent">New</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{notification.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Recent Orders */}
         <Card>

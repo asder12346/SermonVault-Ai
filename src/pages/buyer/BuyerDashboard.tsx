@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { BuyerLayout } from '@/components/layouts/BuyerLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, DollarSign, TrendingUp, Package, Store, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import type { BuyerStats, Order, Listing } from '@/lib/types';
 
 const BuyerDashboard = () => {
-  const { buyer } = useAuth();
+  const navigate = useNavigate();
+  const { buyer, loading: authLoading } = useAuth();
   const [stats, setStats] = useState<BuyerStats>({
     activeOrders: 0,
     completedOrders: 0,
@@ -21,10 +22,14 @@ const BuyerDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (buyer) {
+    if (!authLoading) {
+      if (!buyer) {
+        navigate('/onboarding');
+        return;
+      }
       fetchDashboardData();
     }
-  }, [buyer]);
+  }, [buyer, authLoading, navigate]);
 
   const fetchDashboardData = async () => {
     if (!buyer) return;
@@ -38,7 +43,7 @@ const BuyerDashboard = () => {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      const activeOrders = orders?.filter(o => 
+      const activeOrders = orders?.filter(o =>
         ['pending', 'accepted', 'shipped'].includes(o.status)
       ).length || 0;
 

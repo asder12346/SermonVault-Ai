@@ -33,7 +33,7 @@ export function Navbar() {
             </div>
             <span className="text-xl font-bold text-foreground">AgriLinkChain</span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
@@ -49,25 +49,14 @@ export function Navbar() {
               Contact
             </Link>
           </div>
-          
-          {/* Auth Buttons */}
+
+          {/* Get Started Button */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
-              <Button asChild>
-                <Link to={getDashboardLink()}>Dashboard</Link>
-              </Button>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/login">Log In</Link>
-                </Button>
-                <Button asChild className="bg-primary hover:bg-primary/90">
-                  <Link to="/signup">Sign Up</Link>
-                </Button>
-              </>
-            )}
+            <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-6">
+              <Link to="/signup">Get Started</Link>
+            </Button>
           </div>
-          
+
           {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2"
@@ -80,7 +69,7 @@ export function Navbar() {
             )}
           </button>
         </div>
-        
+
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border">
@@ -97,21 +86,13 @@ export function Navbar() {
               <Link to="/contact" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors" onClick={() => setIsOpen(false)}>
                 Contact
               </Link>
+              <Link to="/dashboard" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors" onClick={() => setIsOpen(false)}>
+                Dashboard
+              </Link>
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                {user ? (
-                  <Button asChild>
-                    <Link to={getDashboardLink()} onClick={() => setIsOpen(false)}>Dashboard</Link>
-                  </Button>
-                ) : (
-                  <>
-                    <Button variant="outline" asChild>
-                      <Link to="/login" onClick={() => setIsOpen(false)}>Log In</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link to="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
-                    </Button>
-                  </>
-                )}
+                <Button asChild>
+                  <Link to={getDashboardLink()} onClick={() => setIsOpen(false)}>Get Started</Link>
+                </Button>
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ import {
   Store, 
   ShoppingCart, 
   CreditCard, 
-  Star, 
   User, 
   Bell, 
   LogOut,
@@ -26,7 +25,6 @@ const navItems = [
   { icon: Store, label: 'Marketplace', href: '/buyer/marketplace' },
   { icon: ShoppingCart, label: 'My Orders', href: '/buyer/orders' },
   { icon: CreditCard, label: 'Payments', href: '/buyer/payments' },
-  { icon: Star, label: 'My Reviews', href: '/buyer/reviews' },
   { icon: User, label: 'Profile', href: '/buyer/profile' },
   { icon: Bell, label: 'Notifications', href: '/buyer/notifications' },
 ];

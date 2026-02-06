@@ -17,11 +17,17 @@ import Dashboard from "./pages/Dashboard";
 import FarmerDashboard from "./pages/farmer/FarmerDashboard";
 import FarmerListings from "./pages/farmer/FarmerListings";
 import FarmerOrders from "./pages/farmer/FarmerOrders";
+import FarmerProfile from "./pages/farmer/FarmerProfile";
+import FarmerEarnings from "./pages/farmer/FarmerEarnings";
+import FarmerNotifications from "./pages/farmer/FarmerNotifications";
 
 // Buyer Pages
 import BuyerDashboard from "./pages/buyer/BuyerDashboard";
 import BuyerMarketplace from "./pages/buyer/BuyerMarketplace";
 import BuyerOrders from "./pages/buyer/BuyerOrders";
+import BuyerProfile from "./pages/buyer/BuyerProfile";
+import BuyerNotifications from "./pages/buyer/BuyerNotifications";
+import BuyerPayments from "./pages/buyer/BuyerPayments";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -47,11 +53,17 @@ const App = () => (
             <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
             <Route path="/farmer/listings" element={<FarmerListings />} />
             <Route path="/farmer/orders" element={<FarmerOrders />} />
+            <Route path="/farmer/profile" element={<FarmerProfile />} />
+            <Route path="/farmer/earnings" element={<FarmerEarnings />} />
+            <Route path="/farmer/notifications" element={<FarmerNotifications />} />
             
             {/* Buyer Routes */}
             <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
             <Route path="/buyer/marketplace" element={<BuyerMarketplace />} />
             <Route path="/buyer/orders" element={<BuyerOrders />} />
+            <Route path="/buyer/profile" element={<BuyerProfile />} />
+            <Route path="/buyer/notifications" element={<BuyerNotifications />} />
+            <Route path="/buyer/payments" element={<BuyerPayments />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

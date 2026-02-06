@@ -13,7 +13,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { signUp } = useAuth();
-  
+
   const [selectedRole, setSelectedRole] = useState<AppRole | null>(
     (searchParams.get('role') as AppRole) || null
   );
@@ -25,17 +25,17 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedRole) {
       toast.error('Please select a role');
       return;
     }
-    
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       return;
     }
-    
+
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters');
       return;
@@ -61,7 +61,7 @@ const SignUp = () => {
             <ArrowLeft className="w-4 h-4" />
             Back to home
           </Link>
-          
+
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div className="w-16 h-16 rounded-xl bg-primary flex items-center justify-center">
@@ -71,10 +71,10 @@ const SignUp = () => {
             <h1 className="text-3xl font-bold text-foreground mb-2">Join AgriLinkChain</h1>
             <p className="text-muted-foreground">Choose how you want to participate in the marketplace</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             {/* Farmer Card */}
-            <Card 
+            <Card
               className="cursor-pointer border-2 hover:border-primary transition-all card-hover"
               onClick={() => setSelectedRole('farmer')}
             >
@@ -109,9 +109,9 @@ const SignUp = () => {
                 <Button className="w-full mt-6">Sign Up as Farmer</Button>
               </CardContent>
             </Card>
-            
+
             {/* Buyer Card */}
-            <Card 
+            <Card
               className="cursor-pointer border-2 hover:border-accent transition-all card-hover"
               onClick={() => setSelectedRole('buyer')}
             >
@@ -149,7 +149,7 @@ const SignUp = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           <p className="text-center text-sm text-muted-foreground mt-8">
             Already have an account?{' '}
             <Link to="/login" className="text-primary hover:underline font-medium">
@@ -164,20 +164,19 @@ const SignUp = () => {
   return (
     <div className="min-h-screen bg-earth-gradient flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <button 
+        <button
           onClick={() => setSelectedRole(null)}
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Change role
         </button>
-        
+
         <Card className="border-2">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${
-                selectedRole === 'farmer' ? 'bg-primary' : 'bg-accent'
-              }`}>
+              <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${selectedRole === 'farmer' ? 'bg-primary' : 'bg-accent'
+                }`}>
                 {selectedRole === 'farmer' ? (
                   <Leaf className="w-8 h-8 text-primary-foreground" />
                 ) : (
@@ -192,7 +191,7 @@ const SignUp = () => {
               Fill in your details to get started
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -206,7 +205,7 @@ const SignUp = () => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -218,7 +217,7 @@ const SignUp = () => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
@@ -230,7 +229,7 @@ const SignUp = () => {
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
@@ -242,9 +241,9 @@ const SignUp = () => {
                   required
                 />
               </div>
-              
-              <Button 
-                type="submit" 
+
+              <Button
+                type="submit"
                 className={`w-full ${selectedRole === 'farmer' ? 'bg-primary hover:bg-primary/90' : 'bg-accent hover:bg-accent/90 text-accent-foreground'}`}
                 disabled={loading}
               >
@@ -258,7 +257,7 @@ const SignUp = () => {
                 )}
               </Button>
             </form>
-            
+
             <p className="text-center text-sm text-muted-foreground mt-6">
               Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">

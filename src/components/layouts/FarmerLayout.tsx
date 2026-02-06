@@ -6,9 +6,8 @@ import {
   Package, 
   ShoppingCart, 
   Wallet, 
-  Star, 
   User, 
-  Bell, 
+  Bell,
   LogOut,
   Menu,
   X
@@ -26,9 +25,8 @@ const navItems = [
   { icon: Package, label: 'My Listings', href: '/farmer/listings' },
   { icon: ShoppingCart, label: 'Orders', href: '/farmer/orders' },
   { icon: Wallet, label: 'Earnings', href: '/farmer/earnings' },
-  { icon: Star, label: 'Reviews', href: '/farmer/reviews' },
-  { icon: User, label: 'Profile', href: '/farmer/profile' },
   { icon: Bell, label: 'Notifications', href: '/farmer/notifications' },
+  { icon: User, label: 'Profile', href: '/farmer/profile' },
 ];
 
 export function FarmerLayout({ children }: FarmerLayoutProps) {

@@ -10,6 +10,7 @@ interface AuthContextType {
   role: AppRole | null;
   farmer: Farmer | null;
   buyer: Buyer | null;
+  isEmailConfirmed: boolean;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string, role: AppRole) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -27,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [farmer, setFarmer] = useState<Farmer | null>(null);
   const [buyer, setBuyer] = useState<Buyer | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     try {
@@ -36,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-      
+
       if (profileData) {
         setProfile(profileData as Profile);
       }
@@ -47,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .select('role')
         .eq('user_id', userId)
         .maybeSingle();
-      
+
       if (roleData) {
         setRole(roleData.role as AppRole);
 
@@ -66,6 +68,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .eq('user_id', userId)
             .maybeSingle();
           if (buyerData) setBuyer(buyerData as Buyer);
+        } else if (roleData.role === 'admin') {
+          // Admin doesn't have a specific profile table in this schema yet, 
+          // but we can ensure the role is set correctly.
+          console.log('Admin user detected');
         }
       }
     } catch (error) {
@@ -85,10 +91,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+        setIsEmailConfirmed(Boolean(session?.user?.email_confirmed_at));
+
         if (session?.user) {
-          // Defer data fetch to avoid blocking
-          setTimeout(() => fetchUserData(session.user.id), 0);
+          await fetchUserData(session.user.id);
         } else {
           setProfile(null);
           setRole(null);
@@ -103,6 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setIsEmailConfirmed(Boolean(session?.user?.email_confirmed_at));
       if (session?.user) {
         fetchUserData(session.user.id);
       }
@@ -173,6 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role,
         farmer,
         buyer,
+        isEmailConfirmed,
         loading,
         signUp,
         signIn,

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, Package, MapPin, Star, ShoppingCart, Loader2 } from 'lucide-react';
+import { Search, Package, MapPin, Star, ShoppingCart, Loader2, Filter } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -109,85 +109,99 @@ const BuyerMarketplace = () => {
 
   return (
     <BuyerLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Marketplace</h1>
-          <p className="text-muted-foreground">Browse fresh produce from verified farmers</p>
+      <div className="space-y-8 animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+          <div>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">Marketplace</h1>
+            <p className="text-gray-500 mt-1">Discover fresh, verified produce directly from farmers</p>
+          </div>
         </div>
 
-        {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input
-            placeholder="Search by product, category, or location..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+        {/* Search & Filter */}
+        <div className="flex gap-4 max-w-2xl">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Input
+              placeholder="Search products, farmers, or locations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 rounded-full bg-white border-gray-200 shadow-sm focus:border-green-500 focus:ring-green-500 transition-all"
+            />
+          </div>
+          <Button variant="outline" className="h-12 w-12 rounded-full border-gray-200 hover:bg-gray-50 hover:text-green-600">
+            <Filter className="w-5 h-5" />
+          </Button>
         </div>
 
         {/* Listings Grid */}
         {loading ? (
-          <div className="text-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+          <div className="text-center py-20">
+            <Loader2 className="w-10 h-10 animate-spin text-green-600 mx-auto" />
+            <p className="text-gray-500 mt-4">Loading fresh produce...</p>
           </div>
         ) : filteredListings.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">No listings found</h3>
-              <p className="text-muted-foreground">Try adjusting your search or check back later</p>
+          <Card className="border-dashed border-2 bg-gray-50/50">
+            <CardContent className="text-center py-16">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">No listings found</h3>
+              <p className="text-gray-500 max-w-md mx-auto">
+                We couldn't find any produce matching your search. Try adjusting your filters or check back later.
+              </p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredListings.map((listing) => (
-              <Card key={listing.id} className="card-hover overflow-hidden">
-                <div className="aspect-video bg-muted flex items-center justify-center">
-                  <Package className="w-12 h-12 text-muted-foreground" />
+              <Card key={listing.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white">
+                <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+                  <img 
+                    src={listing.image_url || 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=400'} 
+                    alt={listing.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-white/90 backdrop-blur text-gray-900 hover:bg-white shadow-sm font-medium">
+                      {listing.category}
+                    </Badge>
+                  </div>
                 </div>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground line-clamp-1">{listing.title}</h3>
-                    {listing.category && (
-                      <Badge variant="secondary" className="text-xs">
-                        {listing.category}
-                      </Badge>
-                    )}
+                
+                <CardContent className="p-5">
+                  <div className="mb-3">
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="font-bold text-lg text-gray-900 line-clamp-1 group-hover:text-green-700 transition-colors">
+                        {listing.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-gray-500 line-clamp-2">
+                      {listing.description || 'Fresh, high-quality produce straight from the farm.'}
+                    </p>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                    {listing.description || 'Fresh from the farm'}
-                  </p>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <MapPin className="w-4 h-4" />
-                    <span>{listing.farmers?.location || 'Unknown location'}</span>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-4 bg-gray-50 p-2 rounded-lg">
+                    <MapPin className="w-3.5 h-3.5 text-green-600" />
+                    <span className="truncate">{listing.farmers?.location || 'Unknown location'}</span>
+                    <span className="mx-1">•</span>
+                    <span className="font-medium text-gray-700">{listing.farmers?.farm_name}</span>
                   </div>
                   
-                  {listing.farmers?.average_rating ? (
-                    <div className="flex items-center gap-1 text-sm mb-3">
-                      <Star className="w-4 h-4 text-warning fill-warning" />
-                      <span className="text-foreground">{listing.farmers.average_rating.toFixed(1)}</span>
-                      <span className="text-muted-foreground">from {listing.farmers.farm_name}</span>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-muted-foreground mb-3">
-                      From {listing.farmers?.farm_name || 'Farm'}
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between pt-3 border-t border-border">
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                     <div>
-                      <span className="text-xl font-bold text-primary">${listing.price}</span>
-                      <span className="text-sm text-muted-foreground">/{listing.unit}</span>
-                      <p className="text-xs text-muted-foreground">
-                        {listing.available_quantity} {listing.unit} available
-                      </p>
+                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Price</p>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-bold text-green-700">${listing.price}</span>
+                        <span className="text-sm text-gray-500">/{listing.unit}</span>
+                      </div>
                     </div>
-                    <Button size="sm" onClick={() => setSelectedListing(listing)}>
-                      <ShoppingCart className="w-4 h-4 mr-1" />
-                      Order
+                    <Button 
+                      size="sm" 
+                      className="rounded-full bg-gray-900 hover:bg-green-600 text-white transition-colors shadow-lg shadow-gray-900/10 hover:shadow-green-600/20"
+                      onClick={() => setSelectedListing(listing)}
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Buy Now
                     </Button>
                   </div>
                 </CardContent>
@@ -198,63 +212,82 @@ const BuyerMarketplace = () => {
 
         {/* Order Dialog */}
         <Dialog open={!!selectedListing} onOpenChange={() => setSelectedListing(null)}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Place Order</DialogTitle>
+              <DialogTitle className="text-2xl font-serif font-bold text-center">Place Order</DialogTitle>
             </DialogHeader>
             {selectedListing && (
-              <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-muted/50">
-                  <h3 className="font-semibold text-foreground">{selectedListing.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    ${selectedListing.price}/{selectedListing.unit} · {selectedListing.available_quantity} available
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    From {selectedListing.farmers?.farm_name}
-                  </p>
+              <div className="space-y-6 mt-4">
+                <div className="flex gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                  <div className="w-20 h-20 bg-gray-200 rounded-lg shrink-0 overflow-hidden">
+                    <img 
+                      src={selectedListing.image_url || 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=200'} 
+                      alt={selectedListing.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900">{selectedListing.title}</h3>
+                    <p className="text-sm text-gray-500 mb-1">{selectedListing.farmers?.farm_name}</p>
+                    <Badge variant="outline" className="text-xs bg-white text-green-700 border-green-200">
+                      In Stock: {selectedListing.available_quantity} {selectedListing.unit}
+                    </Badge>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="quantity">Quantity ({selectedListing.unit})</Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    max={selectedListing.available_quantity}
-                    placeholder="Enter quantity"
-                    value={orderQuantity}
-                    onChange={(e) => setOrderQuantity(e.target.value)}
-                  />
-                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="quantity" className="text-sm font-medium text-gray-700">
+                      Quantity ({selectedListing.unit})
+                    </Label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      max={selectedListing.available_quantity}
+                      placeholder="0.00"
+                      value={orderQuantity}
+                      onChange={(e) => setOrderQuantity(e.target.value)}
+                      className="h-11"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="address">Delivery Address</Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter delivery address"
-                    value={orderAddress}
-                    onChange={(e) => setOrderAddress(e.target.value)}
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="address" className="text-sm font-medium text-gray-700">
+                      Delivery Address
+                    </Label>
+                    <Input
+                      id="address"
+                      placeholder="Enter full delivery address"
+                      value={orderAddress}
+                      onChange={(e) => setOrderAddress(e.target.value)}
+                      className="h-11"
+                    />
+                  </div>
                 </div>
 
                 {orderQuantity && parseFloat(orderQuantity) > 0 && (
-                  <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-                    <p className="text-sm text-muted-foreground">Total</p>
-                    <p className="text-2xl font-bold text-primary">
+                  <div className="flex justify-between items-center p-4 bg-green-50 rounded-xl border border-green-100">
+                    <span className="font-medium text-green-900">Total Amount</span>
+                    <span className="text-2xl font-bold text-green-700">
                       ${(parseFloat(orderQuantity) * selectedListing.price).toFixed(2)}
-                    </p>
+                    </span>
                   </div>
                 )}
 
-                <Button onClick={handleOrder} className="w-full" disabled={submitting}>
+                <Button 
+                  onClick={handleOrder} 
+                  className="w-full h-12 rounded-full bg-green-600 hover:bg-green-700 text-lg font-medium shadow-lg shadow-green-600/20" 
+                  disabled={submitting}
+                >
                   {submitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Placing order...
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Processing...
                     </>
                   ) : (
-                    'Place Order'
+                    'Confirm Order'
                   )}
                 </Button>
               </div>

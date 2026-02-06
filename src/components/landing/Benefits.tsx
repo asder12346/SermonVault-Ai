@@ -98,7 +98,7 @@ export function Benefits() {
           <div className="relative mt-8 lg:mt-0">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] group">
               <img 
-                src="https://images.unsplash.com/photo-1625246333195-551e50519938?q=80&w=2864&auto=format&fit=crop" 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgqZKcxpCLedyU7hcRBaPa6vgc-Jqek9yrEg&s" 
                 alt="Smart Farming Technology" 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />

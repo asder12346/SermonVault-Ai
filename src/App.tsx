@@ -33,6 +33,8 @@ import BuyerPayments from "./pages/buyer/BuyerPayments";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -41,6 +43,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <PWAInstallPrompt />
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}

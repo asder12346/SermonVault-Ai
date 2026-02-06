@@ -74,25 +74,25 @@ const BuyerDashboard = () => {
 
   const getOrderStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-warning/10 text-warning border-warning/20';
-      case 'accepted': return 'bg-primary/10 text-primary border-primary/20';
-      case 'shipped': return 'bg-accent/10 text-accent border-accent/20';
-      case 'delivered': return 'bg-success/10 text-success border-success/20';
-      case 'cancelled': return 'bg-destructive/10 text-destructive border-destructive/20';
-      default: return 'bg-muted text-muted-foreground';
+      case 'pending': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+      case 'accepted': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'shipped': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'delivered': return 'bg-green-100 text-green-700 border-green-200';
+      case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
+      default: return 'bg-gray-100 text-gray-700';
     }
   };
 
   return (
     <BuyerLayout>
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {buyer?.business_name || 'Buyer'}</p>
+            <h1 className="text-3xl font-serif font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-500 mt-1">Manage your orders and discover fresh produce</p>
           </div>
-          <Button asChild>
+          <Button asChild className="bg-orange-600 hover:bg-orange-700 text-white rounded-full px-6 shadow-lg shadow-orange-600/20">
             <Link to="/buyer/marketplace">
               <Store className="w-4 h-4 mr-2" />
               Browse Marketplace
@@ -101,74 +101,81 @@ const BuyerDashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Orders</p>
-                <p className="text-2xl font-bold text-foreground">{stats.activeOrders}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Active Orders</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.activeOrders}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-accent" />
+              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                <ShoppingCart className="w-6 h-6 text-orange-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Completed Orders</p>
-                <p className="text-2xl font-bold text-foreground">{stats.completedOrders}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Completed Orders</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.completedOrders}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
-                <Package className="w-6 h-6 text-success" />
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+                <Package className="w-6 h-6 text-green-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Spend</p>
-                <p className="text-2xl font-bold text-foreground">${stats.totalSpend.toLocaleString()}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Total Spend</p>
+                <p className="text-3xl font-bold text-gray-900">${stats.totalSpend.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-blue-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-8">
           {/* Recent Orders */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" />
+          <Card className="border-none shadow-lg shadow-gray-100">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-orange-600" />
                 Recent Orders
               </CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
                 <Link to="/buyer/orders">View all</Link>
               </Button>
             </CardHeader>
             <CardContent>
               {recentOrders.length === 0 ? (
-                <div className="text-center py-8">
-                  <ShoppingCart className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">No orders yet</p>
-                  <p className="text-sm text-muted-foreground">Start browsing the marketplace to place orders</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ShoppingCart className="w-8 h-8 text-gray-300" />
+                  </div>
+                  <p className="text-gray-500 font-medium">No orders yet</p>
+                  <p className="text-sm text-gray-400">Start browsing the marketplace to place orders</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 mt-4">
                   {recentOrders.map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
-                      <div>
-                        <p className="font-medium text-foreground">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {order.quantity} units · ${order.total_price}
-                        </p>
+                    <div key={order.id} className="group flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 transition-all duration-200">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center border border-gray-100 text-gray-400">
+                          <Package className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900">Order #{order.id.slice(0, 8)}</p>
+                          <p className="text-sm text-gray-500">
+                            {order.quantity} units · ${order.total_price}
+                          </p>
+                        </div>
                       </div>
-                      <Badge className={getOrderStatusColor(order.status)}>
+                      <Badge className={`${getOrderStatusColor(order.status)} border px-3 py-1 rounded-full capitalize`}>
                         {order.status}
                       </Badge>
                     </div>
@@ -179,32 +186,42 @@ const BuyerDashboard = () => {
           </Card>
 
           {/* Featured Listings */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Store className="w-5 h-5" />
+          <Card className="border-none shadow-lg shadow-gray-100">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Store className="w-5 h-5 text-green-600" />
                 Featured Products
               </CardTitle>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-green-600 hover:text-green-700 hover:bg-green-50">
                 <Link to="/buyer/marketplace">See all</Link>
               </Button>
             </CardHeader>
             <CardContent>
               {featuredListings.length === 0 ? (
-                <div className="text-center py-8">
-                  <Package className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">No listings available</p>
-                  <p className="text-sm text-muted-foreground">Check back soon for new products</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Package className="w-8 h-8 text-gray-300" />
+                  </div>
+                  <p className="text-gray-500">No listings available</p>
+                  <p className="text-sm text-gray-400">Check back soon for new products</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   {featuredListings.map((listing) => (
-                    <div key={listing.id} className="p-4 rounded-lg bg-muted/50">
-                      <p className="font-medium text-foreground truncate">{listing.title}</p>
-                      <p className="text-sm text-muted-foreground">{listing.category}</p>
-                      <p className="text-lg font-bold text-primary mt-2">
-                        ${listing.price}/{listing.unit}
-                      </p>
+                    <div key={listing.id} className="p-4 rounded-xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 transition-all duration-200 group cursor-pointer">
+                      <div className="aspect-square rounded-lg bg-gray-200 mb-3 overflow-hidden">
+                         <img src={listing.image_url || 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=200'} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                      <p className="font-bold text-gray-900 truncate">{listing.title}</p>
+                      <p className="text-xs text-gray-500 mb-2">{listing.category}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-lg font-bold text-green-600">
+                          ${listing.price}/{listing.unit}
+                        </p>
+                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-400 hover:bg-green-600 hover:text-white transition-colors shadow-sm">
+                           <ArrowRight className="w-4 h-4" />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -13,7 +13,9 @@ import {
   Package, 
   AlertCircle,
   CheckCircle,
-  XCircle
+  XCircle,
+  TrendingUp,
+  Activity
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import type { AdminStats, Farmer, Listing } from '@/lib/types';
@@ -107,85 +109,89 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fade-in">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Monitor and manage the platform</p>
+          <h1 className="text-3xl font-serif font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-500 mt-1">Platform overview and management actions</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Farmers</p>
-                <p className="text-2xl font-bold text-foreground">{stats.totalFarmers}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Total Farmers</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.totalFarmers}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Leaf className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+                <Leaf className="w-6 h-6 text-green-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Buyers</p>
-                <p className="text-2xl font-bold text-foreground">{stats.totalBuyers}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Total Buyers</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.totalBuyers}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 text-accent" />
+              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                <ShoppingBag className="w-6 h-6 text-orange-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Orders</p>
-                <p className="text-2xl font-bold text-foreground">{stats.totalOrders}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                <p className="text-3xl font-bold text-gray-900">{stats.totalOrders}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-success" />
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                <ShoppingCart className="w-6 h-6 text-blue-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          <Card className="stat-card">
-            <div className="flex items-center justify-between">
+          <Card className="border-none shadow-lg shadow-gray-100 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-foreground">${stats.totalRevenue.toLocaleString()}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                <p className="text-3xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-warning" />
+              <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-purple-600" />
               </div>
-            </div>
+            </CardContent>
           </Card>
         </div>
 
         {/* Alerts */}
         {(stats.pendingVerifications > 0 || stats.pendingListings > 0) && (
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-6">
             {stats.pendingVerifications > 0 && (
-              <Card className="border-warning bg-warning/5">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-warning" />
+              <Card className="border-none shadow-md bg-amber-50/50">
+                <CardContent className="p-6 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
                   <div>
-                    <p className="font-medium text-foreground">{stats.pendingVerifications} Pending Verifications</p>
-                    <p className="text-sm text-muted-foreground">Farmers waiting for approval</p>
+                    <p className="font-bold text-gray-900 text-lg">{stats.pendingVerifications} Pending Verifications</p>
+                    <p className="text-sm text-gray-600">Farmers waiting for your approval</p>
                   </div>
                 </CardContent>
               </Card>
             )}
             {stats.pendingListings > 0 && (
-              <Card className="border-accent bg-accent/5">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <Package className="w-5 h-5 text-accent" />
+              <Card className="border-none shadow-md bg-blue-50/50">
+                <CardContent className="p-6 flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                    <Package className="w-5 h-5" />
+                  </div>
                   <div>
-                    <p className="font-medium text-foreground">{stats.pendingListings} Pending Listings</p>
-                    <p className="text-sm text-muted-foreground">Products waiting for approval</p>
+                    <p className="font-bold text-gray-900 text-lg">{stats.pendingListings} Pending Listings</p>
+                    <p className="text-sm text-gray-600">Products waiting for your review</p>
                   </div>
                 </CardContent>
               </Card>
@@ -193,35 +199,37 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-8">
           {/* Pending Verifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertCircle className="w-5 h-5" />
+          <Card className="border-none shadow-lg shadow-gray-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-gray-500" />
                 Pending Farmer Verifications
               </CardTitle>
             </CardHeader>
             <CardContent>
               {pendingFarmers.length === 0 ? (
-                <div className="text-center py-8">
-                  <CheckCircle className="w-12 h-12 text-success mx-auto mb-3" />
-                  <p className="text-muted-foreground">All farmers verified</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  </div>
+                  <p className="text-gray-900 font-medium">All caught up!</p>
+                  <p className="text-sm text-gray-500">No pending farmer verifications.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 mt-4">
                   {pendingFarmers.map((farmer) => (
-                    <div key={farmer.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div key={farmer.id} className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-transparent hover:border-gray-100 transition-all">
                       <div>
-                        <p className="font-medium text-foreground">{farmer.farm_name}</p>
-                        <p className="text-sm text-muted-foreground">{farmer.location}</p>
+                        <p className="font-bold text-gray-900">{farmer.farm_name}</p>
+                        <p className="text-sm text-gray-500">{farmer.location}</p>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleVerifyFarmer(farmer.id, 'approved')}
-                          className="text-success border-success hover:bg-success hover:text-success-foreground"
+                          className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-9 w-9 p-0"
                         >
                           <CheckCircle className="w-4 h-4" />
                         </Button>
@@ -229,7 +237,7 @@ const AdminDashboard = () => {
                           size="sm"
                           variant="outline"
                           onClick={() => handleVerifyFarmer(farmer.id, 'rejected')}
-                          className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg h-9 w-9 p-0"
                         >
                           <XCircle className="w-4 h-4" />
                         </Button>
@@ -242,35 +250,37 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Pending Listings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Package className="w-5 h-5" />
+          <Card className="border-none shadow-lg shadow-gray-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Package className="w-5 h-5 text-gray-500" />
                 Pending Listings
               </CardTitle>
             </CardHeader>
             <CardContent>
               {pendingListings.length === 0 ? (
-                <div className="text-center py-8">
-                  <CheckCircle className="w-12 h-12 text-success mx-auto mb-3" />
-                  <p className="text-muted-foreground">All listings reviewed</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  </div>
+                  <p className="text-gray-900 font-medium">All caught up!</p>
+                  <p className="text-sm text-gray-500">No pending listings reviews.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 mt-4">
                   {pendingListings.map((listing) => (
-                    <div key={listing.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                    <div key={listing.id} className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-transparent hover:border-gray-100 transition-all">
                       <div>
-                        <p className="font-medium text-foreground">{listing.title}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-bold text-gray-900">{listing.title}</p>
+                        <p className="text-sm text-gray-500">
                           ${listing.price}/{listing.unit} · {listing.available_quantity} available
                         </p>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => handleApproveListing(listing.id, 'approved')}
-                          className="text-success border-success hover:bg-success hover:text-success-foreground"
+                          className="bg-green-600 hover:bg-green-700 text-white rounded-lg h-9 w-9 p-0"
                         >
                           <CheckCircle className="w-4 h-4" />
                         </Button>
@@ -278,7 +288,7 @@ const AdminDashboard = () => {
                           size="sm"
                           variant="outline"
                           onClick={() => handleApproveListing(listing.id, 'rejected')}
-                          className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg h-9 w-9 p-0"
                         >
                           <XCircle className="w-4 h-4" />
                         </Button>

@@ -46,52 +46,56 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50/50">
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar h-16 flex items-center justify-between px-4 border-b border-sidebar-border">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md h-16 flex items-center justify-between px-4 border-b border-gray-200 shadow-sm">
         <Link to="/admin/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-destructive flex items-center justify-center">
-            <Shield className="w-5 h-5 text-destructive-foreground" />
+          <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white">
+            <Shield className="w-4 h-4" />
           </div>
-          <span className="font-bold text-sidebar-foreground">Admin Panel</span>
+          <span className="font-serif font-bold text-xl text-gray-900">AgriLinkChain</span>
         </Link>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-sidebar-foreground">
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-600">
           {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </header>
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 z-40 h-full w-64 bg-sidebar transform transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 z-40 h-full w-72 bg-white border-r border-gray-100 transform transition-transform duration-300 ease-in-out
         lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        shadow-2xl lg:shadow-none
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="hidden lg:flex items-center gap-2 p-6 border-b border-sidebar-border">
-            <div className="w-10 h-10 rounded-lg bg-destructive flex items-center justify-center">
-              <Shield className="w-6 h-6 text-destructive-foreground" />
+          <div className="hidden lg:flex items-center gap-3 p-8">
+            <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-900/20">
+              <Shield className="w-5 h-5" />
             </div>
             <div>
-              <span className="font-bold text-sidebar-foreground block">AgriLinkChain</span>
-              <span className="text-xs text-sidebar-foreground/60">Admin Panel</span>
+              <span className="font-serif font-bold text-xl text-gray-900 block leading-none">AgriLinkChain</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">Admin Panel</span>
             </div>
           </div>
 
-          {/* User info */}
-          <div className="p-4 border-b border-sidebar-border mt-16 lg:mt-0">
+          {/* User info card */}
+          <div className="mx-4 mt-2 mb-6 p-4 rounded-2xl bg-slate-50 border border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center text-destructive font-semibold">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 font-bold shadow-sm border border-slate-100">
                 {profile?.full_name?.[0] || 'A'}
               </div>
-              <div>
-                <p className="text-sm font-medium text-sidebar-foreground">{profile?.full_name || 'Admin'}</p>
-                <p className="text-xs text-sidebar-foreground/60">Administrator</p>
+              <div className="overflow-hidden">
+                <p className="text-sm font-bold text-gray-900 truncate">{profile?.full_name || 'Administrator'}</p>
+                <div className="flex items-center gap-1.5">
+                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                   <p className="text-xs text-slate-600 font-medium">Super User</p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -100,14 +104,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                    flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group
                     ${isActive 
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
-                      : 'text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'
+                      ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20' 
+                      : 'text-gray-500 hover:bg-slate-50 hover:text-gray-900'
                     }
                   `}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}`} />
                   {item.label}
                 </Link>
               );
@@ -115,10 +119,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </nav>
 
           {/* Logout */}
-          <div className="p-4 border-t border-sidebar-border">
+          <div className="p-4 border-t border-gray-100">
             <Button
               variant="ghost"
-              className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+              className="w-full justify-start text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl px-4 py-6"
               onClick={handleLogout}
             >
               <LogOut className="w-5 h-5 mr-3" />
@@ -131,14 +135,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Main content */}
-      <main className="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
-        <div className="p-6">
+      <main className="lg:ml-72 pt-20 lg:pt-8 min-h-screen transition-all duration-300">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
           {children}
         </div>
       </main>

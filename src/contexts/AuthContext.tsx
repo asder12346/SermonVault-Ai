@@ -32,46 +32,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserData = async (userId: string) => {
     try {
-      // Fetch profile
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
+      // Parallelize profile and role fetching
+      const [profileResult, roleResult] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle()
+      ]);
 
-      if (profileData) {
-        setProfile(profileData as Profile);
+      if (profileResult.data) {
+        setProfile(profileResult.data as Profile);
       }
 
-      // Fetch role
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .maybeSingle();
-
+      const roleData = roleResult.data;
       if (roleData) {
-        setRole(roleData.role as AppRole);
+        const userRole = roleData.role as AppRole;
+        setRole(userRole);
 
         // Fetch role-specific data
-        if (roleData.role === 'farmer') {
+        if (userRole === 'farmer') {
           const { data: farmerData } = await supabase
             .from('farmers')
             .select('*')
             .eq('user_id', userId)
             .maybeSingle();
           if (farmerData) setFarmer(farmerData as Farmer);
-        } else if (roleData.role === 'buyer') {
+        } else if (userRole === 'buyer') {
           const { data: buyerData } = await supabase
             .from('buyers')
             .select('*')
             .eq('user_id', userId)
             .maybeSingle();
           if (buyerData) setBuyer(buyerData as Buyer);
-        } else if (roleData.role === 'admin') {
-          // Admin doesn't have a specific profile table in this schema yet, 
-          // but we can ensure the role is set correctly.
-          console.log('Admin user detected');
         }
       }
     } catch (error) {
@@ -86,9 +76,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let isInitialLoad = true;
+
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isInitialLoad) {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsEmailConfirmed(Boolean(session?.user?.email_confirmed_at));
+
+        if (session?.user) {
+          fetchUserData(session.user.id).finally(() => setLoading(false));
+        } else {
+          setLoading(false);
+        }
+      }
+    });
+
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        isInitialLoad = false; // Auth state change happened, stop initial load handling
+
         setSession(session);
         setUser(session?.user ?? null);
         setIsEmailConfirmed(Boolean(session?.user?.email_confirmed_at));
@@ -104,17 +113,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     );
-
-    // THEN check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsEmailConfirmed(Boolean(session?.user?.email_confirmed_at));
-      if (session?.user) {
-        fetchUserData(session.user.id);
-      }
-      setLoading(false);
-    });
 
     return () => subscription.unsubscribe();
   }, []);

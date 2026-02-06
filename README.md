@@ -5,7 +5,6 @@ AgricLinkChain is a premium, blockchain-powered agricultural marketplace designe
 ## 🌐 Live Application
 
 - Domain: agriclinkchain.com
-- Firebase Project: agriclinkchain.firebaseapp.com
 
 ## 🛡️ Admin Dashboard
 

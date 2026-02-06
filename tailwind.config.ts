@@ -73,6 +73,7 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        serif: ["Playfair Display", "serif"],
         display: ["Inter", "system-ui", "sans-serif"],
       },
       keyframes: {
